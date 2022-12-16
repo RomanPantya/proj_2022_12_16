@@ -3,5 +3,5 @@ export interface IUser {
   name: string;
   email: string;
   age: number;
-  isSingle: boolean;
+  is_single: boolean;
 }
