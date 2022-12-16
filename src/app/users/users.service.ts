@@ -31,3 +31,16 @@ export async function createUser(
 
     return result;
 }
+
+export async function getUserById(
+    connection: PoolClient,
+    id: string,
+) {
+    const { rows: [result] } = await connection.query(`
+    select *
+    from users
+    where id = $1
+    `, [id]);
+
+    return result || null;
+}
