@@ -1,4 +1,4 @@
-import { firstController } from './app/first/first.controller';
+import { usersController } from './app/users/users.controller';
 import { generateServer } from './app/generate-server';
 import { connectToPg } from './common/connect-to-pg';
 
@@ -11,7 +11,7 @@ export async function main() {
         next();
     });
 
-    app.use('/', firstController);
+    app.use('/users', usersController);
 
     const port = 3000;
     app.listen(port, () => {
