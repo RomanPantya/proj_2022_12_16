@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { createUser, getUserById, getAllUsers } from './users.service';
+import {
+    createUser, getUserById,
+    getAllUsers, removeUser,
+} from './users.service';
 
 const router = Router();
 
@@ -35,6 +38,20 @@ router.get('/', async (req, res) => {
             data: result,
         }
         : 'Do not have users in this database');
+});
+
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    const result = await removeUser(req.db, id);
+
+    res.json(result
+        ? {
+            message: 'This user was delete',
+            data: result,
+        }
+        : `Do not have user with id: ${id}`);
+
+    // res.status(204).end();
 });
 
 export const usersController = router;
