@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createUser, getUserById } from './users.service';
+import { createUser, getUserById, getAllUsers } from './users.service';
 
 const router = Router();
 
@@ -17,12 +17,24 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
     const result = await getUserById(req.db, id);
 
-    res.json({
-        message: result
-            ? `Thats user with id: ${id}`
-            : `Do not have user with id: ${id}`,
-        data: result,
-    });
+    res.json(result
+        ? {
+            message: `Thats user with id: ${id}`,
+            data: result,
+        }
+        : `Do not have user with id: ${id}`);
+});
+
+router.get('/', async (req, res) => {
+    const { limit = 10, skip = 0 } = req.query;
+    const result = await getAllUsers(req.db, limit as string, skip as string);
+
+    res.json(result.length
+        ? {
+            message: 'Thats all users in this database',
+            data: result,
+        }
+        : 'Do not have users in this database');
 });
 
 export const usersController = router;

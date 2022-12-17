@@ -44,3 +44,18 @@ export async function getUserById(
 
     return result || null;
 }
+
+export async function getAllUsers(
+    connection: PoolClient,
+    limit: string,
+    skip: string,
+) {
+    const { rows } = await connection.query(`
+    select *
+    from users
+    limit $1
+    offset $2
+    `, [limit, skip]);
+
+    return rows;
+}
