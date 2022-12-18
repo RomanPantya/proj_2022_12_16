@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
     createPost, getPostById,
-    getPostsByUserId,
+    getPostsByUserId, getAllPosts,
 } from './posts.service';
 
 const router = Router();
@@ -40,6 +40,17 @@ router.get('/user/:id', async (req, res) => {
             date: result,
         }
         : `Do not have posts with user_id: ${id}`);
+});
+
+router.get('/', async (req, res) => {
+    const result = await getAllPosts(req.db);
+
+    res.json(result.length
+        ? {
+            message: 'Thats all posts in this database',
+            data: result,
+        }
+        : 'Do not have posts in this database');
 });
 
 export const postsController = router;
