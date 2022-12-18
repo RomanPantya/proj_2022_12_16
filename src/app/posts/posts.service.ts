@@ -24,3 +24,16 @@ export async function createPost(
 
     return result;
 }
+
+export async function getPostById(
+    connection: PoolClient,
+    id: string,
+) {
+    const { rows: [result] } = await connection.query(`
+  select *
+  from posts
+  where id = $1
+  `, [id]);
+
+    return result || null;
+}
