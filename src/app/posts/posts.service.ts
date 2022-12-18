@@ -73,3 +73,16 @@ export async function removePostById(
 
     return result || null;
 }
+
+export async function removePostsByUserId(
+    connection: PoolClient,
+    userId: string,
+) {
+    const { rows } = await connection.query(`
+    delete from posts
+    where user_id = $1
+    returning *
+    `, [userId]);
+
+    return rows;
+}

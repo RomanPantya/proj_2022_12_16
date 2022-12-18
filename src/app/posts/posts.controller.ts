@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
     createPost, getPostById,
     getPostsByUserId, getAllPosts,
-    removePostById,
+    removePostById, removePostsByUserId,
 } from './posts.service';
 
 const router = Router();
@@ -38,7 +38,7 @@ router.get('/user/:id', async (req, res) => {
             message: result.length > 1
                 ? `Thats all posts with user_id: ${id}`
                 : `This is post with user_id: ${id}`,
-            date: result,
+            data: result,
         }
         : `Do not have posts with user_id: ${id}`);
 });
@@ -52,6 +52,22 @@ router.get('/', async (req, res) => {
             data: result,
         }
         : 'Do not have posts in this database');
+
+    // res.status(204).end();
+});
+
+router.delete('/user/:id', async (req, res) => {
+    const { id } = req.params;
+    const result = await removePostsByUserId(req.db, id);
+
+    res.json(result.length
+        ? {
+            message: result.length > 1
+                ? `This posts was delete`
+                : `This post was delete`,
+            data: result,
+        }
+        : `Do not have posts with user_id: ${id}`);
 });
 
 router.delete('/:id', async (req, res) => {
