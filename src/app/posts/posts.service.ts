@@ -1,5 +1,6 @@
 import { PoolClient } from 'pg';
 import { CreatePostDto } from '../../dto/post.dto/create-post.dto';
+import { UpdatePostDto } from '../../dto/post.dto/update-post.dto';
 
 export async function createPost(
     connection: PoolClient,
@@ -85,4 +86,51 @@ export async function removePostsByUserId(
     `, [userId]);
 
     return rows;
+}
+
+export async function updatePostById(
+    connection: PoolClient,
+    id: string,
+    realyData: UpdatePostDto,
+    // Partial<Omit<PostEntity, 'id' | 'user_id'>>,
+) {
+    // const entries = Object.entries(realyData);
+    // entries.push(['id', id]);
+
+    // const { rows: [result] } = await connection.query(`
+    // update posts
+    // set
+    // ${entries.slice(0, -1).map(([k], i) => {
+    //     const dollar = `$${i + 1}`;
+    //     return `${k} = ${dollar}`;
+    // })}
+    // where id = $${entries.length}
+    // returning *
+    // `, entries.map(([, v]) => v));
+
+    // return result || null;
+
+    const { rows: [post] } = await connection.query(`
+    select *
+    from posts 
+    where id = $1
+    `, [id]);
+
+    if (!post) {
+        return null;
+    }
+
+    const { title: t, summary: s } = post;
+    const { title = t, summary = s } = realyData;
+
+    const { rows: [result] } = await connection.query(`
+    update posts
+    set
+    title = $1,
+    summary = $2
+    where id = $3
+    returning *
+    `, [title, summary, id]);
+
+    return result || null;
 }

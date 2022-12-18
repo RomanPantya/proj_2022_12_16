@@ -3,6 +3,7 @@ import {
     createPost, getPostById,
     getPostsByUserId, getAllPosts,
     removePostById, removePostsByUserId,
+    updatePostById,
 } from './posts.service';
 
 const router = Router();
@@ -77,6 +78,28 @@ router.delete('/:id', async (req, res) => {
     res.json(result
         ? {
             message: `Posts with id: ${id} was remove`,
+            data: result,
+        }
+        : `Do not have post with id: ${id}`);
+});
+
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const correctKey = ['title', 'summary'];
+    const changeData = Object.entries(req.body)
+        .filter(([k]) => correctKey.includes(k));
+
+    if (!changeData.length) {
+        res.json('You must put correct data to update post');
+        return;
+    }
+
+    const realyData = Object.fromEntries(changeData);
+    const result = await updatePostById(req.db, id, realyData);
+
+    res.json(result
+        ? {
+            message: `Post with id: ${id} was update`,
             data: result,
         }
         : `Do not have post with id: ${id}`);

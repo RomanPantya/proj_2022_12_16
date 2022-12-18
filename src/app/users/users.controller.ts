@@ -65,6 +65,7 @@ router.put('/:id', async (req, res) => {
 
     if (!realyData.length) {
         res.json('You must put correct data to update user!');
+        return;
     }
 
     const changeData = Object.fromEntries(realyData);
